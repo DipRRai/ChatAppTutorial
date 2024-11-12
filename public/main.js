@@ -17,6 +17,7 @@ socket.on('clients-total', (data) => {
 
 socket.on('chat-message', (data) => {
     console.log(data);
+    addMessageToUI(false, data)
 })
 
 function sendMessage(){
@@ -25,6 +26,24 @@ function sendMessage(){
         message: messageInput.value,
         dateTime: new Date()
     }
-
     socket.emit('message', data)
+    addMessageToUI(true, data)
+    messageInput.value = ""
+}
+
+function addMessageToUI(isOwnMessage, data){
+    const element = `
+            <li class="${isOwnMessage ? "message-right" : "message-left"}">
+                <p class="message">
+                    ${data.message}
+                    <span>${data.name} 🦅 ${data.dateTime}</span>
+                </p>
+            </li>`
+
+    messageContainer.innerHTML += element
+    scrollToBottom()
+}
+
+function scrollToBottom(){
+    messageContainer.scrollTo(0, messageContainer.scrollHeight)
 }
